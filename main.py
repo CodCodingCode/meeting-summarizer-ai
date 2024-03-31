@@ -184,8 +184,11 @@ def listen_for_events(subscription_name: str = None):
     print("Done")
 
 
-if __name__ == "__main__":
-    space = create_space()
-    topic_name = "projects/your-project-id/topics/your-topic-id"
-    subscribe_to_space(space.name, topic_name)
-    listen_for_events("projects/your-project-id/subscriptions/your-subscription-id")
+space = create_space()
+print(f"Join the meeting at {space.meeting_uri}")
+
+TOPIC_NAME = "projects/industrial-net-418911/topics/workspace-events"
+SUBSCRIPTION_NAME = "projects/industrial-net-418911/topics/workspace-events-sub"
+
+subscription = subscribe_to_space(topic_name=TOPIC_NAME, space_name=space.name)
+listen_for_events(subscription_name=SUBSCRIPTION_NAME)
