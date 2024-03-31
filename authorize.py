@@ -32,6 +32,3 @@ def authorize() -> Credentials:
     return credentials
 
 USER_CREDENTIALS = authorize()
-
-#if __name__ == "__main__":
-    #main()
