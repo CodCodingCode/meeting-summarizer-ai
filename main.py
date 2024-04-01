@@ -188,7 +188,7 @@ space = create_space()
 print(f"Join the meeting at {space.meeting_uri}")
 
 TOPIC_NAME = "projects/industrial-net-418911/topics/workspace-events"
-SUBSCRIPTION_NAME = "projects/industrial-net-418911/topics/workspace-events-sub"
+SUBSCRIPTION_NAME = "projects/industrial-net-418911/subscriptions/workspace-events-sub"
 
 subscription = subscribe_to_space(topic_name=TOPIC_NAME, space_name=space.name)
 listen_for_events(subscription_name=SUBSCRIPTION_NAME)
