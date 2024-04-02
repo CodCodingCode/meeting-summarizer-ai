@@ -3,6 +3,7 @@ from google.apps import meet_v2 as meet
 from google.auth.transport import requests
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
+from fileDownload import download_file
 import os
 import json
 
@@ -139,6 +140,7 @@ def on_recording_ready(message: pubsub_v1.subscriber.message.Message):
     client = meet.ConferenceRecordsServiceClient(credentials=USER_CREDENTIALS)
     recording = client.get_recording(name=resource_name)
     print(f"Recording available at {recording.drive_destination.export_uri}")
+    download_file(recording.drive_destination.export_uri)
 
 
 def on_transcript_ready(message: pubsub_v1.subscriber.message.Message):
@@ -186,6 +188,7 @@ def listen_for_events(subscription_name: str = None):
 
 space = create_space()
 print(f"Join the meeting at {space.meeting_uri}")
+
 
 TOPIC_NAME = "projects/industrial-net-418911/topics/workspace-events"
 SUBSCRIPTION_NAME = "projects/industrial-net-418911/subscriptions/workspace-events-sub"
