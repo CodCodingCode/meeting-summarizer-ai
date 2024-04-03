@@ -3,9 +3,13 @@ from google.apps import meet_v2 as meet
 from google.auth.transport import requests
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
-from fileDownload import download_file
-import os
+from google.oauth2 import service_account
+from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
+from googleapiclient.http import MediaIoBaseDownload
 import json
+import os
+import io
 
 def authorize() -> Credentials:
     """Ensure valid credentials for calling the Meet REST API."""
@@ -19,7 +23,7 @@ def authorize() -> Credentials:
         flow = InstalledAppFlow.from_client_secrets_file(
             CLIENT_SECRET_FILE,
             scopes=[
-                'https://www.googleapis.com/auth/meetings.space.created',
+                'https://www.googleapis.com/auth/meetings.space.created', "https://www.googleapis.com/auth/drive", "https://www.googleapis.com/auth/drive.file", "https://www.googleapis.com/auth/drive.readonly"
             ])
         flow.run_local_server(port=0)
         credentials = flow.credentials
@@ -34,6 +38,35 @@ def authorize() -> Credentials:
     return credentials
 
 USER_CREDENTIALS = authorize()
+
+def download_file(real_file_id):
+    """Downloads a file from Google Drive using OAuth2 credentials."""
+    try:
+        # Use USER_CREDENTIALS for the Google Drive API
+        service = build('drive', 'v3', credentials=USER_CREDENTIALS)
+        request = service.files().get_media(fileId=real_file_id)
+
+        file = io.BytesIO()
+        downloader = MediaIoBaseDownload(file, request)
+        done = False
+        while not done:
+            status, done = downloader.next_chunk()
+            print(f"Download {int(status.progress() * 100)}%.")
+        if file:
+            # Specify the path where you want to save the file
+            # Example: "./downloaded_file.pdf"
+            save_path = "./downloaded_file.mp3"
+
+            # Write the contents of the BytesIO object to a file
+            with open(save_path, "wb") as f:
+                f.write(file.getvalue())
+            print(f"File has been downloaded and saved to {save_path}")
+            return save_path
+    except HttpError as error:
+        print(f"An error occurred: {error}")
+        file = None
+    return None
+
 
 
 def create_space() -> meet.Space:
@@ -140,9 +173,7 @@ def on_recording_ready(message: pubsub_v1.subscriber.message.Message):
     client = meet.ConferenceRecordsServiceClient(credentials=USER_CREDENTIALS)
     recording = client.get_recording(name=resource_name)
     print(f"Recording available at {recording.drive_destination.export_uri}")
-    download_file(recording.drive_destination.export_uri)
-
-
+    
 def on_transcript_ready(message: pubsub_v1.subscriber.message.Message):
     """Display information about a meeting transcript when artifact is ready."""
     payload = json.loads(message.data)
@@ -186,6 +217,7 @@ def listen_for_events(subscription_name: str = None):
     print("Done")
 
 
+
 space = create_space()
 print(f"Join the meeting at {space.meeting_uri}")
 
@@ -194,4 +226,7 @@ TOPIC_NAME = "projects/industrial-net-418911/topics/workspace-events"
 SUBSCRIPTION_NAME = "projects/industrial-net-418911/subscriptions/workspace-events-sub"
 
 subscription = subscribe_to_space(topic_name=TOPIC_NAME, space_name=space.name)
+
+download_file(space.recording.drive_destination.drive_file_id)
+
 listen_for_events(subscription_name=SUBSCRIPTION_NAME)
