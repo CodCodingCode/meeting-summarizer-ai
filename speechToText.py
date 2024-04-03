@@ -1,5 +1,7 @@
 from openai import OpenAI
 import os
+
+#Need openai API key for whisper and gpt 3 turbo
 client = OpenAI(
     api_key=os.getenv("OPENAI_API_KEY")
 )
