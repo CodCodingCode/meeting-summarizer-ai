@@ -222,11 +222,11 @@ space = create_space()
 print(f"Join the meeting at {space.meeting_uri}")
 
 
-TOPIC_NAME = "projects/industrial-net-418911/topics/workspace-events"
-SUBSCRIPTION_NAME = "projects/industrial-net-418911/subscriptions/workspace-events-sub"
+TOPIC_NAME = # YOUR_TOPIC_NAME
+SUBSCRIPTION_NAME = # YOUR_SUBSCRIPTION_NAME 
 
 subscription = subscribe_to_space(topic_name=TOPIC_NAME, space_name=space.name)
 
-download_file(space.recording.drive_destination.drive_file_id)
+download_file(#Insert Google Drive File here)
 
 listen_for_events(subscription_name=SUBSCRIPTION_NAME)
