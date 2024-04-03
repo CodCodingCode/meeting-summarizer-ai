@@ -4,7 +4,9 @@ client = OpenAI(
     api_key=os.getenv("OPENAI_API_KEY")
 )
 
-audio_file= open("/Users/owner/Documents/GitHub/meeting-summarizer-ai/downloaded_file.mp3", "rb")
+PATH = #Path of audio file
+
+audio_file= open(PATH, "rb")
 
 transcription = client.audio.transcriptions.create(
   model="whisper-1", 
