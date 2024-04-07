@@ -18,17 +18,17 @@ To run these scripts, you need to have:
 - Google Cloud project with the APIs enabled
 - OAuth 2.0 Client ID and credentials file
 
-# Contributing
+## Contributing
 Feel free to fork the repository, make changes, and submit pull requests. Contributions are welcome!
 
-Fork it!
+## Fork it!
 Create your feature branch: git checkout -b my-new-feature
 Commit your changes: git commit -am 'Add some feature'
 Push to the branch: git push origin my-new-feature
 Submit a pull request.
 
-# License
+## License
 This project is licensed under the MIT License - see the LICENSE.md file for details.
 
-# Acknowledgments
+## Acknowledgments
 Google's documentation for Google APIs!
